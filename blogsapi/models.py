@@ -46,6 +46,7 @@ STATE_CHOICES = (
 class Blogs(models.Model):
     image = models.ImageField(upload_to ='upload/images',null=False,blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    category = models.CharField(max_length=150,null=True,blank=True)
     title = models.CharField(max_length=150,null=False,blank=False)
     description = models.TextField()
     state = models.CharField(choices=STATE_CHOICES,max_length=50)

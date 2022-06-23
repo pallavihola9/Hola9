@@ -44,7 +44,7 @@ STATE_CHOICES = (
     )
 
 class Profile(models.Model):
-    image = models.ImageField(upload_to ='upload/images',null=False,blank=False)
+    image = models.ImageField(upload_to ='upload/images',null=True,blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150,null=False,blank=False)
     email = models.CharField(max_length=150,null=False,blank=False)

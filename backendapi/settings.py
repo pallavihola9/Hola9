@@ -3,6 +3,7 @@ from datetime import timedelta
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 SECRET_KEY = 'django-insecure-3dy!tq&dteytu=zfj2)k%*u0dt9ws&1(j8nsu!^3-3th5^*f^='
 
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
     'otp_reg',
     'commentbox',
     'blogscommentbox',
+    'paymentapi',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +49,7 @@ ROOT_URLCONF = 'backendapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR,], # add TEMPLATES_DIR that we defined above
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,8 +133,8 @@ REST_FRAMEWORK = {
 }
 #SIMPLE JWT
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=525600),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,

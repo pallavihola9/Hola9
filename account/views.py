@@ -14,6 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 import random
 import http.client
+
+from profileapi.models import Profile
 from .models import PhoneOTP , User
 import ast
 
@@ -107,22 +109,50 @@ class wishlist(APIView):
   permission_classes = [IsAuthenticated]
   def post(self, request, format=None):
     wishlist=request.data.get('wishlist')
-    print("@@WISHLIST",type(list(wishlist)))
-    wishlist=list(wishlist)
-    print("starting")
-    # wishlist=wishlist.remove(',')
     print(wishlist)
-    wishlistone=[]
+    wishlist=wishlist+","
+    newlist=[]
+    y=""
     for x in wishlist:
-      if x!=',':
-        wishlistone.append(int(x))
-    print("current wishlist",wishlistone)
-    res = []
-    for i in wishlistone:
-      if i not in res:
-          res.append(i)
-    print("res",res)
-    wishlist=Product.objects.filter(pk__in=res)
+      if x!=",":
+        y=y+x
+      else:
+        newlist.append(int(y))
+        print("value",newlist)
+        y=""
+    print(newlist)
+    # print("@@WISHLIST",type(list(wishlist)))
+    # wishlist=list(wishlist)
+    # print("starting")
+    # # wishlist=wishlist.remove(',')
+    # print(wishlist)
+    # wishlistone=[]
+    # for x in wishlist:
+    #   if x!=',':
+    #     wishlistone.append(int(x))
+    # print("current wishlist",wishlistone)
+    # res = []
+    # for i in wishlistone:
+    #   if i not in res:
+    #       res.append(i)
+    # print("res",res)
+
+    wishlist=Product.objects.filter(pk__in=newlist)
     print("@@findal dat in wishlist ",wishlist)
     wishlist = serializers.serialize('json', wishlist)
     return HttpResponse(wishlist, content_type='application/json')
+
+
+
+
+class updateProfile1(APIView):
+  def post(self, request, format=None):
+    email=request.data.get("email")
+    s=Profile.objects.filter(email=email)
+    print(type(s))
+    if(s):
+      profile = serializers.serialize('json', s)
+      return HttpResponse(profile, content_type='application/json')
+    return HttpResponse("false", content_type='application/json')
+
+

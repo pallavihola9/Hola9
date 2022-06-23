@@ -20,7 +20,8 @@ urlpatterns = [
     path('api/comment/',include('commentbox.urls')),
     #BlogsComments URLS
     path('api/blogscomment/',include('blogscommentbox.urls')),
-    #Chat API
+    #Payment API
+    path('api/payment/',include('paymentapi.urls')),
     
 
 ]+static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

@@ -9,7 +9,8 @@ route = routers.DefaultRouter()
 route.register("",ProfileView,basename='profileview')
 
 urlpatterns = [
-    path('',include(route.urls)),
+    path('',include(route.urls))
+    
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
