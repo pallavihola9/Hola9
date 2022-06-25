@@ -1,12 +1,14 @@
+import random
 import environ
 
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Order
+from .models import Order,  TransationIdone
 from .serializers import OrderSerializer
 from . import Checksum
+import datetime
 
 # Create your views here.
 
@@ -81,8 +83,15 @@ def handlepayment(request):
             # after successfull payment we will make isPaid=True and will save the order
             order.isPaid = True
             order.save()
+            success="succ"+"id"+str(random.randint(1000000000,99999999999999999999))
+            s=TransationIdone.objects.create(id1=success,dateid=datetime.datetime.now(),message="success")
+            s.save()
             # we will render a template to display the payment status
-            return render(request, 'paytm/paymentstatus.html', {'response': response_dict})
+            return render(request, 'paytm/paymentstatus.html', {'response': response_dict,'success':success})
         else:
+            fail="fail"+"?id"+str(random.randint(1000000000,99999999999999999999))
+            s=TransationIdone.objects.create(id1=success,dateid=datetime.datetime.now(),message="fail")
+            s.save()
+
             print('order was not successful because' + response_dict['RESPMSG'])
-            return render(request, 'paytm/paymentstatus.html', {'response': response_dict})
+            return render(request, 'paytm/paymentstatus.html', {'response': response_dict,'success':fail})

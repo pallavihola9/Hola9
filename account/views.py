@@ -1,5 +1,6 @@
 import json
 from site import addsitedir
+from tkinter import EW
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,6 +15,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 import random
 import http.client
+from paymentapi.models import TransationIdone
+
 
 from profileapi.models import Profile
 from .models import PhoneOTP , User
@@ -154,5 +157,88 @@ class updateProfile1(APIView):
       profile = serializers.serialize('json', s)
       return HttpResponse(profile, content_type='application/json')
     return HttpResponse("false", content_type='application/json')
+
+class createFeatured(APIView):
+  def post(self, request, format=None):
+    image=request.data.get("image")
+    user=request.data.get("user")
+    title=request.data.get("title")
+    price=request.data.get("price")
+    tags=request.data.get("tags")
+    description=request.data.get("description")
+    category=request.data.get("category")
+    brand=request.data.get("brand")
+    condition=request.data.get("condition")
+    state=request.data.get("state")
+    city=request.data.get("city")
+    locality=request.data.get("locality")
+    zip_code=request.data.get("zip_code")
+    # date_created=request.data.get("date_created")
+    # video=request.data.get("video")
+    is_featured=True
+    is_active=False
+    token=request.data.get("token")
+    print(token)
+    # print("success value",self.request.session["success"])
+    s1=TransationIdone.objects.filter(id1=token)
+    print("9999999999999999999999999999999999999999",s1)
+    if s1:
+      if("succ" in token):
+        print("success")
+        s=Product.objects.create(image=image,user_id=user,title=title,tags=tags,price=price,description=description,category=category,brand=brand,condition=condition,state=state,city=city,locality=locality,zip_code=zip_code,is_featured=is_featured,is_active=is_active)
+        s.save()
+        s1=TransationIdone.objects.get(id1=token)
+        print(s.pk)
+        print("fsedjklfjoisdpljufkl;dsfjkldsfjkl;esdjflksddfjdskl")
+        s1.adsid_id=s.pk
+        s1.userid_id=user
+        s1.save()
+      else:
+        print("fail path")
+        return HttpResponse("fail", content_type='application/json')
+    else:
+      return HttpResponse("fail", content_type='application/json')
+    
+    return HttpResponse("success", content_type='application/json')
+
+
+class ordersPyament(APIView):
+  def post(self,request,format=None):
+    user=request.data.get("user")
+    order=request.data.get("order")
+    payment=request.data.get("payment")
+    print(order)
+    
+    s1=Product.objects.filter(user_id=user)
+    s=TransationIdone.objects.filter(userid_id=user)
+    data = serializers.serialize('json', s1)
+    print(data)
+    # return HttpResponse(data,content_type='application/json')
+    
+      
+    
+    s=TransationIdone.objects.filter(userid_id=user)
+    
+    # return HttpResponse("unable to fetch",)
+    for x in s:
+      s1=Product.objects.filter(id=x.adsid_id)
+      if s1:
+        x.ProductData=serializers.serialize('json', s1)
+      data = serializers.serialize('json', s)
+      return HttpResponse(data,content_type='application/json')
+
+
+
+class verifyEmail(APIView):
+    def post(self,request,format=None):
+      email=request.data.get("email")
+      s=User.objects.filter(email=email)
+      if s:
+        return HttpResponse("already exist",content_type='application/json')
+      else:
+        return HttpResponse("not exist",content_type='application/json')
+      
+
+      
 
 

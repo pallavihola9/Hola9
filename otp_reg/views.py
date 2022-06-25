@@ -2,6 +2,10 @@ from django.shortcuts import render
 import os
 import random
 import math
+# *********************** FOR OTP SEND TO MOBILE NUMBER **********************************
+#******************* START  *****************************
+
+# ***************** END SEND OTP ***************************
 
 # * Rest Framework Imports
 from rest_framework.response import Response
