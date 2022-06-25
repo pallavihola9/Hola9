@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import   updateProfile1, userads, wishlist , userblogs
-from account.views import SendPasswordResetEmailView, UserChangePasswordView, UserLoginView, UserProfileView, UserRegistrationView, UserPasswordResetView
+from .views import   updateProfile1, userads, wishlist , userblogs,createFeatured,ordersPyament
+from account.views import SendPasswordResetEmailView, UserChangePasswordView, UserLoginView, UserProfileView, UserRegistrationView, UserPasswordResetView,ordersPyament,verifyEmail
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
@@ -12,5 +12,8 @@ urlpatterns = [
     path('wishlist/',wishlist.as_view(),name='wishlist'),
     path('blogsby/',userblogs.as_view(),name='userblogs'),
     path('updateProfile/',updateProfile1.as_view(),name='update-Profile'),
+    path('createFeatured/',createFeatured.as_view(),name='update-createFeatured'),
+    path('ordersPyament/',ordersPyament.as_view(),name='update-ordersPyament'),
+    path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
 
 ]
