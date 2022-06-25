@@ -67,6 +67,8 @@ class Product(models.Model):
     video = EmbedVideoField(null=True, blank=True) 
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    subCategoryType=models.CharField(default="null",max_length=3232)
+    subCategoryValue=models.CharField(default="null",max_length=3232)
 
 #Wishlist Models
 class WishListItems(models.Model):
@@ -87,7 +89,27 @@ class WishListItems(models.Model):
 class adsmangeme(models.Model):
     userid=models.ForeignKey(User,related_name='related_primary_manual_roats', on_delete=models.CASCADE)
     adsUserId=models.ForeignKey(User, related_name='related_secondary_manual_roats',on_delete=models.CASCADE)
-    message=PickledObjectField()
+    message=models.TextField()
+    connectMember=models.CharField(max_length=223232,default="srishtisrija@gmail.com")
+
+class AdsAdressLatLon(models.Model):
+    ads=models.ForeignKey(Product, on_delete=models.CASCADE)
+    lat=models.IntegerField()
+    lon=models.IntegerField()
+
+class ImageAdsModels(models.Model):
+    ads= models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True) 
+    image=models.ImageField(upload_to ='upload/images',null=False,blank=False) 
+
+class RealEstateEnquery(models.Model):
+    firstName=models.CharField(max_length=232)
+    lastName=models.CharField(max_length=232)
+    email=models.CharField(max_length=343)
+    zip_code=models.CharField(max_length=232)
+
+class ReportAds(models.Model):
+    ads= models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
+    report=models.CharField(max_length=23222)
 
 
 
