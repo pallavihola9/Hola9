@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 
 
 # * models Import
-from .models import OTPVerifiaction
+from .models import OTPVerifiaction,PhoneUser
 # from .models import CustomUser
 
 #* Errors
@@ -62,6 +62,7 @@ def checkOTP(request):
     otp = request.data['otp']
     generatedOTP = OTPVerifiaction.objects.filter(
         phone_number=number).values_list('otp')
+    print(generatedOTP)
     if generatedOTP[0][0] == otp:
         data = OTPVerifiaction.objects.get(phone_number=number)
         data.is_verfied = True
@@ -87,5 +88,18 @@ def checkOTP(request):
 #         return Response({"IntegrityError": False})
 #     except IntegrityError as e:
 #         return Response({"IntegrityError" : True})
+
+@api_view(['GET', 'POST'])
+def verifyUserPhone(request):
+    phoneNumber=request.data['number']
+    s=PhoneUser.objects.filter(phone_number=phoneNumber)
+    print(s)
+    if s:
+        return Response({"status": "exist useer"})
+    else:
+        return Response({"status":"not Exist"})
+    
+
+
     
 

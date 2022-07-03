@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from account.models import User
 # * Custom Account Manger
 
 
@@ -54,5 +54,10 @@ class OTPVerifiaction(models.Model):
     phone_number = models.IntegerField()
     otp = models.CharField(max_length=4)
     is_verfied = models.BooleanField(default=False)
+
+
+class PhoneUser(models.Model):
+    phone_number=models.IntegerField()
+    user= models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
 
 

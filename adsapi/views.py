@@ -216,3 +216,13 @@ class ReportAds1(APIView):
         s=ReportAds.objects.create(ads=adsModel,report=reportMessage)
         s.save()
         return HttpResponse("sucess", content_type='application/json')
+
+
+class AdsUpload(APIView):
+    def post(self, request, format=None):
+        imageList=request.data.file("imageList")
+        adsiD= request.data.get("adsId")
+        # imageList1=request.data.get("imageList1")
+        print("@@@@imagelist data ,ads id",imageList,adsiD)
+        print("image view",list(imageList))
+        return HttpResponse("sucess", content_type='application/json')
