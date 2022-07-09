@@ -51,6 +51,7 @@ def otpGeneration(request):
     print(number)
     generatedOTP = generatingOTP(number)
     print(generatedOTP)
+    s=OTPVerifiaction.objects.filter(phone_number=number).delete()
     print("end")
     querystring = {"authorization":"FlksSDzg13vfLoUreKH9xh6CbXIA42OVynQduMPG0Bm7Ja5c8qdaBRD5fUS4lT0EX2HzV9rtAcInkZxK","variables_values":generatedOTP,"route":"otp","numbers":number}
     headers = {

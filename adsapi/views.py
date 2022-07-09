@@ -226,3 +226,39 @@ class AdsUpload(APIView):
         print("@@@@imagelist data ,ads id",imageList,adsiD)
         print("image view",list(imageList))
         return HttpResponse("sucess", content_type='application/json')
+
+class adsCommentBoxView(APIView):
+    def post(self, request, format=None):
+        # imageList=request.data.file("imageList")
+        ads= request.data.get("ads")
+        if "message" not in request.POST:
+            print("for data calling ")
+            s1=AdsComment.objects.filter(ads_id=ads)
+            qs_json = serializers.serialize('json', s1)
+            return HttpResponse(qs_json, content_type='application/json')
+        email= request.data.get("email")
+        message= request.data.get("message")
+        datevalue= datetime.datetime.now()
+        s=AdsComment.objects.create(ads_id=ads,email=email,message=message,datetimeValue=datevalue)
+        s.save()
+        # s1=AdsComment.objects.filter(ads=ads)
+        # qs_json = serializers.serialize('json', s1)
+        return HttpResponse("qs_json", content_type='application/json')
+
+class blogCommentBoxView(APIView):
+    def post(self, request, format=None):
+        # imageList=request.data.file("imageList")
+        ads= request.data.get("ads")
+        if "message" not in request.POST:
+            print("for data calling ")
+            s1=BlogComment.objects.filter(ads_id=ads)
+            qs_json = serializers.serialize('json', s1)
+            return HttpResponse(qs_json, content_type='application/json')
+        email= request.data.get("email")
+        message= request.data.get("message")
+        datevalue= datetime.datetime.now()
+        s=BlogComment.objects.create(blog_id=ads,email=email,message=message,datetimeValue=datevalue)
+        s.save()
+        # s1=AdsComment.objects.filter(ads=ads)
+        # qs_json = serializers.serialize('json', s1)
+        return HttpResponse("qs_json", content_type='application/json')

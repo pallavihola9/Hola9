@@ -10,7 +10,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
   password2 = serializers.CharField(style={'input_type':'password'}, write_only=True)
   class Meta:
     model = User
-    fields=['email', 'name', 'password', 'password2', 'tc']
+    fields=['email', 'name', 'password','phoneNumber', 'password2', 'tc']
     extra_kwargs={
       'password':{'write_only':True}
     }
@@ -52,6 +52,9 @@ class UserChangePasswordSerializer(serializers.Serializer):
     user.set_password(password)
     user.save()
     return attrs
+import requests
+
+url = "https://hourmailer.p.rapidapi.com/send"
 
 class SendPasswordResetEmailSerializer(serializers.Serializer):
   email = serializers.EmailField(max_length=255)
@@ -67,6 +70,18 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
       token = PasswordResetTokenGenerator().make_token(user)
       print('Password Reset Token', token)
       link = 'http://localhost:3000/api/user/reset/'+uid+'/'+token
+      payload = {
+	        "toAddress":email,
+	        "title": "hola9 link",
+	        "message": link
+          }
+      headers = {
+	        "content-type": "application/json",
+	        "X-RapidAPI-Key": "6ce72a7a7dmsh214ebefb254c11ap1ec502jsn5a1bfe3fd20a",
+	        "X-RapidAPI-Host": "hourmailer.p.rapidapi.com"
+        } 
+
+      response = requests.request("POST", url, json=payload, headers=headers)
       print('Password Reset Link', link)
       # Send EMail
       body = 'Click Following Link to Reset Your Password '+link

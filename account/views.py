@@ -237,6 +237,25 @@ class verifyEmail(APIView):
         return HttpResponse("already exist",content_type='application/json')
       else:
         return HttpResponse("not exist",content_type='application/json')
+
+
+
+class verifyPhone(APIView):
+    def post(self,request,format=None):
+      phoneNumber=request.data.get("phoneNumber")
+      print(phoneNumber)
+      # s1=User.objects.filter(email=email)
+      # s=User.objects.filter(phoneNumber=phoneNumber)
+      try:
+        user = User.objects.get(phoneNumber=phoneNumber)
+      except:
+        user=None
+      if user is not None:
+        token = get_tokens_for_user(user)
+        return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
+      else:
+        return Response({'errors':{'non_field_errors':['phone Number not exist']}}, status=status.HTTP_404_NOT_FOUND)
+
       
 
       

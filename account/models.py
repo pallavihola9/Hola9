@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 #  Custom User Manager
 class UserManager(BaseUserManager):
-  def create_user(self, email, name, tc, password=None, password2=None):
+  def create_user(self, email, name, tc, phoneNumber,password=None, password2=None):
       """
       Creates and saves a User with the given email, name, tc and password.
       """
@@ -16,13 +16,14 @@ class UserManager(BaseUserManager):
           email=self.normalize_email(email),
           name=name,
           tc=tc,
+          phoneNumber=phoneNumber,
       )
 
       user.set_password(password)
       user.save(using=self._db)
       return user
 
-  def create_superuser(self, email, name, tc, password=None):
+  def create_superuser(self, email, name,phoneNumber, tc, password=None):
       """
       Creates and saves a superuser with the given email, name, tc and password.
       """
@@ -30,6 +31,7 @@ class UserManager(BaseUserManager):
           email,
           password=password,
           name=name,
+          phoneNumber=phoneNumber,
           tc=tc,
       )
       user.is_admin = True
@@ -52,6 +54,7 @@ class User(AbstractBaseUser):
   is_active = models.BooleanField(default=True)
   is_admin = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
+  phoneNumber=models.CharField(max_length=2322,null=False,default=False)
   updated_at = models.DateTimeField(auto_now=True)
   auth_provider = models.CharField(
         max_length=255, blank=False,

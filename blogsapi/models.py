@@ -51,3 +51,10 @@ class Blogs(models.Model):
     description = models.TextField()
     state = models.CharField(choices=STATE_CHOICES,max_length=50)
     city = models.CharField(max_length=50)
+
+
+class BlogComment(models.Model):
+    ads= models.ForeignKey(Blogs, on_delete=models.CASCADE,blank=True, null=True)
+    email=models.CharField(max_length=23222)
+    datetimeValue=models.CharField(max_length=232)
+    message=models.CharField(max_length=23222)

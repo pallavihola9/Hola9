@@ -111,6 +111,14 @@ class ReportAds(models.Model):
     ads= models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     report=models.CharField(max_length=23222)
 
+class AdsComment(models.Model):
+    ads= models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
+    email=models.CharField(max_length=23222)
+    datetimeValue=models.CharField(max_length=232)
+    message=models.CharField(max_length=23222)
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import   updateProfile1, userads, wishlist , userblogs,createFeatured,ordersPyament
-from account.views import SendPasswordResetEmailView, UserChangePasswordView, UserLoginView, UserProfileView, UserRegistrationView, UserPasswordResetView,ordersPyament,verifyEmail
+from .views import  *
+from account.views import *
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
@@ -15,5 +15,6 @@ urlpatterns = [
     path('createFeatured/',createFeatured.as_view(),name='update-createFeatured'),
     path('ordersPyament/',ordersPyament.as_view(),name='update-ordersPyament'),
     path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
+    path('verifyPhone/',verifyPhone.as_view(),name='update-verifyPhone'),
 
 ]
