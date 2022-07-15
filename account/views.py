@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 import json
 from site import addsitedir
 from tkinter import EW
@@ -255,6 +256,73 @@ class verifyPhone(APIView):
         return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
       else:
         return Response({'errors':{'non_field_errors':['phone Number not exist']}}, status=status.HTTP_404_NOT_FOUND)
+class verifyEmail(APIView):
+    def post(self,request,format=None):
+      email=request.data.get("email")
+      print(email)
+      # s1=User.objects.filter(email=email)
+      # s=User.objects.filter(phoneNumber=phoneNumber)
+      try:
+        user = User.objects.get(email=email)
+      except:
+        user=None
+      if user is not None:
+        token = get_tokens_for_user(user)
+        return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
+      else:
+        return Response({'errors':{'non_field_errors':['Email not exist']}}, status=status.HTTP_404_NOT_FOUND)
+class viewsupdate(APIView):
+    def post(self, request, format=None):
+        adsID= request.data.get("adsID")
+        s = Product.objects.get(pk=adsID)
+        s.viewsproduct = s.viewsproduct+1
+        s.save()
+        return HttpResponse("success", content_type='application/json')          
+
+class updateProfileApi(APIView):
+    def post(self, request, format=None):
+        user = request.data.get("user")
+        print(user)
+        if user is None:
+          print('address')
+          idvalues=request.data.get("idvalues")
+          try:
+            s=Profile.objects.filter(user_id=idvalues)
+            data = serializers.serialize('json', s)
+            return HttpResponse(data, content_type='application/json') 
+          except:
+            s=None
+            return HttpResponse("Not exist", content_type='application/json') 
+        else:
+              image = request.data.get("image")
+              user = request.data.get("user")
+              name = request.data.get("name")
+              email = request.data.get("email")
+              PhoneNumber = request.data.get("PhoneNumber")
+              print(PhoneNumber)
+              address = request.data.get("address")
+              state = request.data.get("state")
+              city =request.data.get("city")
+              zipcode = request.data.get("zipcode")
+              print(Profile.objects.filter(user_id=user))
+              if Profile.objects.filter(user_id=user) :
+                s=Profile.objects.get(user_id=user)
+                s.image=image
+                s.name=name
+                s.email=email
+                s.PhoneNumber=PhoneNumber
+                s.address=address
+                s.state=state
+                s.zipcode=zipcode
+                s.save()
+              else:
+                userID = User.objects.get(pk=user)
+                s=Profile.objects.create(image=image,user=userID,city=city,name=name,email=email,PhoneNumber=PhoneNumber,address=address,state=state,zipcode=zipcode,)
+                s.save()
+              return HttpResponse("success", content_type='application/json') 
+
+
+
 
       
 

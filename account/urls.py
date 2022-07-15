@@ -16,5 +16,8 @@ urlpatterns = [
     path('ordersPyament/',ordersPyament.as_view(),name='update-ordersPyament'),
     path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
     path('verifyPhone/',verifyPhone.as_view(),name='update-verifyPhone'),
+    path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
+    path('viewsupdate/', viewsupdate.as_view(),name='viewsupdate'),
+    path('updateProfileApi/', updateProfileApi.as_view(),name='updateProfileApi')
 
 ]

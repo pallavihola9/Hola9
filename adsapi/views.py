@@ -262,3 +262,5 @@ class blogCommentBoxView(APIView):
         # s1=AdsComment.objects.filter(ads=ads)
         # qs_json = serializers.serialize('json', s1)
         return HttpResponse("qs_json", content_type='application/json')
+
+    

@@ -53,7 +53,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to ='upload/images',null=False,blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     title = models.CharField(max_length=150,null=False,blank=False)
-    price = models.DecimalField(max_digits=7,decimal_places=2,null=False,blank=False)
+    price = models.DecimalField(max_digits=11,decimal_places=2,null=False,blank=False)
     tags = models.CharField(max_length=150,null=False,blank=False)
     description = models.TextField()
     category = models.CharField(max_length=50,null=True,blank=True)
@@ -69,6 +69,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
     subCategoryType=models.CharField(default="null",max_length=3232)
     subCategoryValue=models.CharField(default="null",max_length=3232)
+    viewsproduct = models.IntegerField(default=0)
 
 #Wishlist Models
 class WishListItems(models.Model):
