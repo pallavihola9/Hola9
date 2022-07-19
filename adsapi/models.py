@@ -50,7 +50,7 @@ class Product(models.Model):
         ('Good', 'Good'),
         ('Fair', 'Fair'),
     )
-    image = models.ImageField(upload_to ='upload/images',null=False,blank=False)
+    image = models.ImageField(upload_to ='upload/images',null=True,blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     title = models.CharField(max_length=150,null=False,blank=False)
     price = models.DecimalField(max_digits=11,decimal_places=2,null=False,blank=False)
@@ -63,6 +63,8 @@ class Product(models.Model):
     city = models.CharField(max_length=50)
     locality = models.CharField(max_length=200)
     zip_code = models.CharField(max_length=6)
+    lati = models.CharField(max_length=100,default=0)
+    long = models.CharField(max_length=100,default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     video = EmbedVideoField(null=True, blank=True) 
     is_featured = models.BooleanField(default=False)

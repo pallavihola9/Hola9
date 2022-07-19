@@ -6,7 +6,8 @@ from httplib2 import Response
 import requests
 from account.models import User
 import datetime
-from .models import  adsmangeme, Product,AdsAdressLatLon,RealEstateEnquery,ReportAds
+from .models import  adsmangeme, Product,AdsAdressLatLon,RealEstateEnquery,ReportAds ,AdsComment , ImageAdsModels
+from blogsapi.models import BlogComment
 from .serializers import ProductSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
@@ -220,12 +221,23 @@ class ReportAds1(APIView):
 
 class AdsUpload(APIView):
     def post(self, request, format=None):
-        imageList=request.data.file("imageList")
+        imageList=request.data.get("imageList")
         adsiD= request.data.get("adsId")
-        # imageList1=request.data.get("imageList1")
-        print("@@@@imagelist data ,ads id",imageList,adsiD)
-        print("image view",list(imageList))
-        return HttpResponse("sucess", content_type='application/json')
+        print(imageList)
+        print(adsiD)
+        if imageList is None:
+            s1= ImageAdsModels.objects.filter(ads_id=adsiD)
+            qs_json = serializers.serialize('json', s1)
+            return HttpResponse(qs_json, content_type='application/json')
+        else:
+            s=ImageAdsModels.objects.create(image=imageList,ads_id=adsiD)
+            s.save()
+            print(s)
+            # imageList1=request.data.get("imageList1")
+            print("@@@@imagelist data ,ads id",imageList,adsiD)
+            print("image view",list(imageList))
+        
+            return HttpResponse("sucess", content_type='application/json')
 
 class adsCommentBoxView(APIView):
     def post(self, request, format=None):
@@ -243,24 +255,24 @@ class adsCommentBoxView(APIView):
         s.save()
         # s1=AdsComment.objects.filter(ads=ads)
         # qs_json = serializers.serialize('json', s1)
-        return HttpResponse("qs_json", content_type='application/json')
+        return HttpResponse("Success", content_type='application/json')
 
 class blogCommentBoxView(APIView):
     def post(self, request, format=None):
         # imageList=request.data.file("imageList")
-        ads= request.data.get("ads")
+        blogs= request.data.get("blogs")
         if "message" not in request.POST:
             print("for data calling ")
-            s1=BlogComment.objects.filter(ads_id=ads)
+            s1=BlogComment.objects.filter(ads_id=blogs)
             qs_json = serializers.serialize('json', s1)
             return HttpResponse(qs_json, content_type='application/json')
         email= request.data.get("email")
         message= request.data.get("message")
         datevalue= datetime.datetime.now()
-        s=BlogComment.objects.create(blog_id=ads,email=email,message=message,datetimeValue=datevalue)
+        s=BlogComment.objects.create(ads_id=blogs,email=email,message=message,datetimeValue=datevalue)
         s.save()
         # s1=AdsComment.objects.filter(ads=ads)
         # qs_json = serializers.serialize('json', s1)
-        return HttpResponse("qs_json", content_type='application/json')
+        return HttpResponse("Success", content_type='application/json')
 
     

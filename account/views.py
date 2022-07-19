@@ -1,4 +1,5 @@
 from contextlib import nullcontext
+from genericpath import exists
 import json
 from site import addsitedir
 from tkinter import EW
@@ -320,6 +321,15 @@ class updateProfileApi(APIView):
                 s=Profile.objects.create(image=image,user=userID,city=city,name=name,email=email,PhoneNumber=PhoneNumber,address=address,state=state,zipcode=zipcode,)
                 s.save()
               return HttpResponse("success", content_type='application/json') 
+
+class userProfileDetailsApi(APIView):
+    def post(self, request, format=None):
+        user1 = request.data.get("user")
+        s=User.objects.filter(pk=user1)   
+        data = serializers.serialize('json', s)
+        return HttpResponse(data,content_type='application/json')           
+
+
 
 
 

@@ -18,5 +18,5 @@ class adsComment(APIView):
         print("@@ads",ads)
         adsData=AdsComment.objects.filter(ads =ads)
         qs_json = serializers.serialize('json', adsData)
-        return HttpResponse(qs_json, content_type='application/json')
+        return HttpResponse(qs_json , content_type='application/json')
 
