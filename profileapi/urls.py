@@ -3,8 +3,7 @@ from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
-from .views import ProfileView
-
+from .views import *
 route = routers.DefaultRouter()
 route.register("",ProfileView,basename='profileview')
 

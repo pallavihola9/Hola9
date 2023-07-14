@@ -42,7 +42,7 @@ STATE_CHOICES = (
     ('Uttar Pradesh','Uttar Pradesh'),
     ('West Bengal','West Bengal'),
     )
-
+import datetime
 class Blogs(models.Model):
     image = models.ImageField(upload_to ='upload/images',null=False,blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
@@ -51,10 +51,15 @@ class Blogs(models.Model):
     description = models.TextField()
     state = models.CharField(choices=STATE_CHOICES,max_length=50)
     city = models.CharField(max_length=50)
-
+    author=models.CharField(max_length=150,null=False,blank=False,default="null")
+    published_time=models.CharField(max_length=150,null=False,blank=False ,default="null")
+    subtitle=models.CharField(max_length=150,null=False,blank=False,default="null")
+    imagesecond= models.ImageField(upload_to ='upload/images',null=False,blank=False,default="null")
+    published_time=models.CharField(max_length=150,null=False,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
 
 class BlogComment(models.Model):
     ads= models.ForeignKey(Blogs, on_delete=models.CASCADE,blank=True, null=True)
     email=models.CharField(max_length=23222)
     datetimeValue=models.CharField(max_length=232)
     message=models.CharField(max_length=23222)
+    published_time=models.CharField(max_length=232,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))

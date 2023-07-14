@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser
 from django.core.validators import RegexValidator
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import date
 
 #  Custom User Manager
 class UserManager(BaseUserManager):
@@ -23,7 +24,7 @@ class UserManager(BaseUserManager):
       user.save(using=self._db)
       return user
 
-  def create_superuser(self, email, name,phoneNumber, tc, password=None):
+  def create_superuser(self, email, name, tc, password=None):
       """
       Creates and saves a superuser with the given email, name, tc and password.
       """
@@ -31,7 +32,7 @@ class UserManager(BaseUserManager):
           email,
           password=password,
           name=name,
-          phoneNumber=phoneNumber,
+          phoneNumber="909090909090",
           tc=tc,
       )
       user.is_admin = True
@@ -53,7 +54,7 @@ class User(AbstractBaseUser):
   tc = models.BooleanField()
   is_active = models.BooleanField(default=True)
   is_admin = models.BooleanField(default=False)
-  created_at = models.DateTimeField(auto_now_add=True)
+  created_at = models.CharField(max_length=150,null=False,blank=False ,default=date.today)
   phoneNumber=models.CharField(max_length=2322,null=False,default=False)
   updated_at = models.DateTimeField(auto_now=True)
   auth_provider = models.CharField(
@@ -109,7 +110,48 @@ class PhoneOTP(models.Model):
 
     def __str__(self):
         return str(self.phone) + ' is sent ' + str(self.otp)   
+import datetime
+class ReviewSection(models.Model):
+    title= models.CharField(max_length=2322, blank = True, null=True)
+    description= models.CharField(max_length=2322, blank = True, null=True)
+    profile= models.CharField(max_length=2322, blank = True, null=True)
+    role= models.CharField(max_length=2322, blank = True, null=True)
+    rating= models.CharField(max_length=2322, blank = True, null=True)
+    image =models.CharField(max_length=23222222222222,blank=True ,null=True)
+    created_at=models.CharField(max_length=150,null=False,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
 
 
+class TelemetryDaa(models.Model):
+    data= models.CharField(max_length=121111, blank = True, null=True)
+    teleId= models.IntegerField(null=True,default=None)
+    date = models.CharField(max_length=10,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
+    def __str__(self):
+        return str(self.teleId) 
+
+class JobApply(models.Model):
+    name= models.CharField(max_length=200)
+    phone = models.CharField(max_length=17,blank=True)
+    email = models.CharField(max_length=50, null = True, blank = True)
+    title = models.CharField(max_length=20,null = True,blank=True)
+    Introduction = models.CharField(max_length=2000, null=True,blank=True)
+    filename =models.FileField(max_length=232222,blank=True ,null=True)
+    created_at = models.CharField(max_length=150,null=False,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
+class JobsRequired(models.Model):
+    profile = models.CharField(max_length=200)
+    no_of_openings = models.IntegerField(null=True,default=None)
+    title = models.CharField(max_length=2322, blank = True, null=True)
+    description = models.CharField(max_length=2000, null=True)
+    job_responsiblity = models.CharField(max_length=200)
+    technical_skills = models.CharField(max_length=200)
+    Preferred_qualification = models.CharField(max_length=200,null=True)
+    education = models.CharField(max_length=200,null=True)
+    created_at = models.CharField(max_length=150,null=False,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
+
+
+class ContactForm(models.Model):
+    description = models.TextField(max_length=300)
+    name = models.CharField(max_length=255)
+    phone_number = models.IntegerField()
+    add_file = models.FileField(upload_to='', blank=False, null=False)
 
 

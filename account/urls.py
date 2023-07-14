@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import  *
 from account.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
@@ -16,8 +18,20 @@ urlpatterns = [
     path('ordersPyament/',ordersPyament.as_view(),name='update-ordersPyament'),
     path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
     path('verifyPhone/',verifyPhone.as_view(),name='update-verifyPhone'),
-    path('verifyEmail/',verifyEmail.as_view(),name='update-verifyEmail'),
+    path('verifyEmailLogin/',verifyEmailLogin.as_view(),name='update-verifyEmailLogin'),
     path('viewsupdate/', viewsupdate.as_view(),name='viewsupdate'),
     path('updateProfileApi/', updateProfileApi.as_view(),name='updateProfileApi'),
-    path('userProfileDetailsApi/', userProfileDetailsApi.as_view(),name='userProfileDetailsApi')
-]
+    path('userProfileDetailsApi/', userProfileDetailsApi.as_view(),name='userProfileDetailsApi'),
+    path('lastLoginTime', lastLoginTime.as_view(),name='lastLoginTime'),
+    path('lastLoginTimeGet', lastLoginTimeGet.as_view(),name='lastLoginTimeGet'),
+    path('qrCodeAds', QrCodeAds.as_view(),name='qrCodeAds'),
+    path('getQrCodeAds', getQrCodeAds.as_view(),name='getQrCodeAds'),
+    path('reviewSection', reviewSection.as_view(),name='reviewSection'),
+    path('trackingTele',TrackingTele.as_view(),name="trackingTele"),
+    path('paymentDetails',PaymentDetails.as_view(),name="paymentDetails"),
+    path('jobDetails',jobDetails.as_view(),name="jobDetails"),
+    path('jobsRequired',jobsRequired.as_view(),name="jobsRequired"),
+    path('fullProfile',FullProfile.as_view(),name='FullProfile'),
+    path('contactform', EnquiryListCreate.as_view(), name='contactform'),
+
+]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

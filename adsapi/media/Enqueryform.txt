@@ -1,0 +1,47 @@
+Enqueryform/
+	model 
+	url
+	funtion (create value in model)
+	admin.site.regiseter
+createTokenBusiness/
+		businessprofile.json->all values store 
+				model->crete(that data+false)
+CallBackBusiness/ ->true of upper model filed by autheenticaion 
+checkBusinessPlan->
+		url,function->return true or false
+			payloud-7userid
+				return complete data of business profile 
+		  verified_customer ->true/false
+My Ads 
+	updateApi (AdsAPI)
+		if upper model got any business profile 
+			add premiuma and feature data into that model 
+
+
+MyProfile/EditProfile 
+
+updateProfileApi/
+	update model 	
+		 newfields
+		businessPrifle boolean*(true or false)
+
+
+mybusinessPlans 
+		urls
+		function 	
+			return plan data only thats it 
+hola9 help page
+		frontend person will create 
+		chat option with mobile direction ,emaildireactiuon ,message directions 
+
+BecomeVerfiefed
+		
+create_Token_verifed_customer
+			model 
+		 	urls ,fucntion 
+call_back_verified_customer 
+		successfule true 
+
+
+
+

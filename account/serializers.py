@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import User
+from account.models import * 
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -69,7 +69,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
       print('Encoded UID', uid)
       token = PasswordResetTokenGenerator().make_token(user)
       print('Password Reset Token', token)
-      link = 'http://localhost:3000/api/user/reset/'+uid+'/'+token
+      link = 'https://hola9.com/api/user/reset/'+uid+'/'+token    
       payload = {
 	        "toAddress":email,
 	        "title": "hola9 link",
@@ -119,4 +119,20 @@ class UserPasswordResetSerializer(serializers.Serializer):
     except DjangoUnicodeDecodeError as identifier:
       PasswordResetTokenGenerator().check_token(user, token)
       raise serializers.ValidationError('Token is not Valid or Expired')
-  
+
+
+class jobsRequiredSerialize(serializers.ModelSerializer):
+  class Meta:
+    model= JobsRequired
+    fields= '__all__'
+
+class jobdetailsSerializers(serializers.ModelSerializer):
+  class Meta:
+    model = JobApply
+    fields = '__all__'
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactForm
+        fields = '__all__'

@@ -48,16 +48,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.user_name
 
-
+import datetime
 # * Table that stores the OTP and is verfied or not
 class OTPVerifiaction(models.Model):
     phone_number = models.IntegerField()
     otp = models.CharField(max_length=4)
     is_verfied = models.BooleanField(default=False)
-
+    date = models.CharField(max_length=10,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
 
 class PhoneUser(models.Model):
     phone_number=models.IntegerField()
     user= models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
+    date = models.CharField(max_length=10,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))
 
 

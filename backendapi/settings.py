@@ -9,7 +9,8 @@ SECRET_KEY = 'django-insecure-3dy!tq&dteytu=zfj2)k%*u0dt9ws&1(j8nsu!^3-3th5^*f^=
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['192.168.1.10']
+# CSRF_TRUSTED_ORIGINS = ['https://*.hola9.live','https://*.127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,7 +32,12 @@ INSTALLED_APPS = [
     'commentbox',
     'blogscommentbox',
     'paymentapi',
+        'analysis', 
+        # 'openMoney',
+    # 'payu'
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -42,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'backendapi.urls'
@@ -163,8 +170,16 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-PASSWORD_RESET_TIMEOUT = 900
 
+PAYU_MERCHANT_KEY = "jiSsfbIQ"
+PAYU_MERCHANT_SALT = "2Jt2sIH1KR"
+# Change the PAYU_MODE to 'LIVE' for production.
+PAYU_MODE = "TEST"
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+PASSWORD_RESET_TIMEOUT = 900
+# SECURE_SSL_REDIRECT = False
 # Email Configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
@@ -172,3 +187,11 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 EMAIL_USE_TLS = True
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+PAYU_MERCHANT_KEY = "jiSsfbIQ"
+PAYU_MERCHANT_SALT = "2Jt2sIH1KR"
+# Change the PAYU_MODE to 'LIVE' for production.
+PAYU_MODE = "TEST"

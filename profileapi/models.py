@@ -43,8 +43,11 @@ STATE_CHOICES = (
     ('West Bengal','West Bengal'),
     )
 
+
+
+import datetime
 class Profile(models.Model):
-    image = models.ImageField(upload_to ='upload/images',null=True,blank=True)
+    image = models.CharField(max_length=62322222222222222,null=False,blank=False,default="null")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150,null=False,blank=False)
     email = models.CharField(max_length=150,null=False,blank=False)
@@ -53,3 +56,4 @@ class Profile(models.Model):
     state = models.CharField(choices=STATE_CHOICES,max_length=50)
     city = models.CharField(max_length=50)
     zipcode = models.CharField(max_length=6,null=False,blank=False)
+    date = models.CharField(max_length=10,blank=False ,default=datetime.datetime.now().strftime('%Y-%m-%d'))

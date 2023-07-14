@@ -53,11 +53,12 @@ def otpGeneration(request):
     print(generatedOTP)
     s=OTPVerifiaction.objects.filter(phone_number=number).delete()
     print("end")
-    querystring = {"authorization":"FlksSDzg13vfLoUreKH9xh6CbXIA42OVynQduMPG0Bm7Ja5c8qdaBRD5fUS4lT0EX2HzV9rtAcInkZxK","variables_values":generatedOTP,"route":"otp","numbers":number}
+    #querystring = {"authorization":"FlksSDzg13vfLoUreKH9xh6CbXIA42OVynQduMPG0Bm7Ja5c8qdaBRD5fUS4lT0EX2HzV9rtAcInkZxK","variables_values":generatedOTP,"route":"otp","numbers":number}
+    querystring = {"authorization":"NYUAGPHmCO27kq39ir8WB6txeTuFXhEIsSdcoMp0gfyvJ1aDwLQbBluGHPZeV0iOCjLwfxvsYyoWgTaM","variables_values":generatedOTP,"route":"otp","numbers":number}
     headers = {
     'cache-control': "no-cache"
     }
-
+   #NYUAGPHmCO27kq39ir8WB6txeTuFXhEIsSdcoMp0gfyvJ1aDwLQbBluGHPZeV0iOCjLwfxvsYyoWgTaM
     response = requests.request("GET", url, headers=headers, params=querystring)
     print("start")
     print(response.text)
@@ -116,7 +117,23 @@ def verifyUserPhone(request):
         return Response({"status": "exist useer"})
     else:
         return Response({"status":"not Exist"})
-    
+@api_view(['GET', 'POST'])
+def sendMessage(request):
+    sender=request.data['sender']
+    title=request.data['title']
+    message=request.data['message']
+    phoneNumber=request.data['phoneNumber']
+    textValue="Hola9-"+title+"-"+phoneNumber +" -"+message
+    print(textValue)
+    querystring = {"authorization":"NYUAGPHmCO27kq39ir8WB6txeTuFXhEIsSdcoMp0gfyvJ1aDwLQbBluGHPZeV0iOCjLwfxvsYyoWgTaM","variables_values":textValue,"route":"otp","numbers":sender}
+    headers = {
+    'cache-control': "no-cache"
+    }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    return Response({"status": "success"})
+
+   
 
 
     

@@ -7,10 +7,10 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from adsapi.models import Product
+from adsapi.models import Product,LastLogin,QrCode
 from blogsapi.models import Blogs
 from adsapi.serializers import ProductSerializer
-from account.serializers import SendPasswordResetEmailSerializer, UserChangePasswordSerializer, UserLoginSerializer, UserPasswordResetSerializer, UserProfileSerializer, UserRegistrationSerializer
+from account.serializers import *
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,11 +18,13 @@ from rest_framework.permissions import IsAuthenticated
 import random
 import http.client
 from paymentapi.models import TransationIdone
-
+import datetime
+from pytz import timezone 
 
 from profileapi.models import Profile
-from .models import PhoneOTP , User
+from .models import *
 import ast
+from adsapi.models import Pricing,PaymentDetailsValues
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -90,7 +92,7 @@ from django.core import serializers
 class userads(APIView):
   permission_classes = [IsAuthenticated]
   def post(self, request, format=None):
-    print(request.user.id)
+    print(request.user.id) # print the ID of the authentication user
     adsData=Product.objects.filter(user =request.user)
     print("adsData",adsData)
     serializer = serializers.serialize('json', adsData)
@@ -114,18 +116,24 @@ class wishlist(APIView):
   permission_classes = [IsAuthenticated]
   def post(self, request, format=None):
     wishlist=request.data.get('wishlist')
-    print(wishlist)
-    wishlist=wishlist+","
-    newlist=[]
-    y=""
-    for x in wishlist:
-      if x!=",":
-        y=y+x
-      else:
-        newlist.append(int(y))
-        print("value",newlist)
-        y=""
-    print(newlist)
+    print("wishlist ",wishlist,type("wishlist"),len(wishlist))
+
+    
+    if (len(wishlist) == 0):
+      print("len is zerop")
+      newlist=[]
+    else:
+      wishlist=wishlist+","
+      newlist=[]
+      y=""
+      for x in wishlist:
+        if x!=",":
+          y=y+x
+        else:
+          newlist.append(int(y))
+          print("value",newlist)
+          y=""
+          print(newlist)
     # print("@@WISHLIST",type(list(wishlist)))
     # wishlist=list(wishlist)
     # print("starting")
@@ -257,7 +265,7 @@ class verifyPhone(APIView):
         return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
       else:
         return Response({'errors':{'non_field_errors':['phone Number not exist']}}, status=status.HTTP_404_NOT_FOUND)
-class verifyEmail(APIView):
+class verifyEmailLogin(APIView):
     def post(self,request,format=None):
       email=request.data.get("email")
       print(email)
@@ -314,6 +322,7 @@ class updateProfileApi(APIView):
                 s.PhoneNumber=PhoneNumber
                 s.address=address
                 s.state=state
+                s.city=city
                 s.zipcode=zipcode
                 s.save()
               else:
@@ -327,15 +336,244 @@ class userProfileDetailsApi(APIView):
         user1 = request.data.get("user")
         s=User.objects.filter(pk=user1)   
         data = serializers.serialize('json', s)
-        return HttpResponse(data,content_type='application/json')           
+        return HttpResponse(data,content_type='application/json')     
+
+class lastLoginTime(APIView):
+    def post(self, request, format=None):
+        user1 = request.data.get("user")
+        currentDateTime= datetime.datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M:%S.%f')
+        print("start")
+        checkUserExit=LastLogin.objects.filter(userlogin_id=user1)
+        print("end")
+        if checkUserExit:
+          print("first")
+          checkUserExit=LastLogin.objects.get(userlogin_id=user1)
+          checkUserExit.lastloginValue=currentDateTime
+          checkUserExit.save()
+          print(checkUserExit)
+          data = serializers.serialize('json', LastLogin.objects.filter(userlogin_id=checkUserExit.userlogin_id))
+          return HttpResponse(data,content_type='application/json') 
+        else:
+          print("second")
+          s=LastLogin.objects.create(userlogin_id=user1,lastloginValue=currentDateTime)
+          s.save()
+          print(s.pk)
+          data = serializers.serialize('json', LastLogin.objects.filter(userlogin_id=s.userlogin_id))
+          return HttpResponse(data,content_type='application/json')    
 
 
+class lastLoginTimeGet(APIView):
+  def post(self, request, format=None):
+      user1 = request.data.get("user")
+      data = serializers.serialize('json', LastLogin.objects.filter(userlogin_id=user1))
+      return HttpResponse(data,content_type='application/json')    
 
+import qrcode
+from PIL import Image
+import os
+import base64
+class QrCodeAds(APIView):
+  def post(self, request, format=None):
+        product= request.data.get("product")
+        Logo_link = '/hola9Main/hola9DjangoLatest/adsapi/hola9.png'
 
+        logo = Image.open(Logo_link)
 
+        # taking base width
+        basewidth = 100
 
+        # adjust image size
+        wpercent = (basewidth/float(logo.size[0]))
+        hsize = int((float(logo.size[1])*float(wpercent)))
+        logo = logo.resize((basewidth, hsize), Image.ANTIALIAS)
+        QRcode = qrcode.QRCode(
+	        error_correction=qrcode.constants.ERROR_CORRECT_H
+        )
+
+        # taking url or text
+        url = 'https://hola9.com/ads-listing/'+product
+
+        # adding URL or text to QRcode
+        QRcode.add_data(url)
+
+        # generating QR code
+        QRcode.make()
+
+        # taking color name from user
+        QRcolor = 'black'
+
+        # adding color to QR code
+        QRimg = QRcode.make_image(
+	    fill_color=QRcolor, back_color="white").convert('RGB')
+
+        # set size of QR code
+        pos = ((QRimg.size[0] - logo.size[0]) // 2,
+	        (QRimg.size[1] - logo.size[1]) // 2)
+        QRimg.paste(logo, pos)
+
+        # save the QR code generated
+        QRimg.save('/hola9Main/hola9DjangoLatest/adsapi/gfg_QR.png')
+        logo1 = Image.open("/hola9Main/hola9DjangoLatest/adsapi/gfg_QR.png")
+        print(logo1)
+        file_path = os.path.join("/hola9Main/hola9DjangoLatest/adsapi/", "gfg_QR.png")
+        with open("/hola9Main/hola9DjangoLatest/adsapi/gfg_QR.png", "rb") as image_file:
+          encoded_string = base64.b64encode(image_file.read())
+        s=QrCode.objects.create(image=encoded_string,product_id=product)
+        return HttpResponse("Success", content_type='application/json')
+
+class getQrCodeAds(APIView):
+  def post( self,request, format=None):
+    product =request.data.get("product")
+    s=QrCode.objects.filter(product_id=product)
+    data = serializers.serialize('json', s)
+    return HttpResponse(data, content_type='application/json')
+
+class reviewSection(APIView):
+    def get(self, request, format=None):
+      review=ReviewSection.objects.all().order_by("-id")[0:5]
+      data = serializers.serialize('json', review)
+      return HttpResponse(data , content_type='application/json')
+ 
+    
+class TrackingTele(APIView):
+  def post( self,request, format=None):
+    teleData =request.data.get("data")
+    data=ast.literal_eval(teleData)
+    teleId=data["id"]
+    print(teleId)
+    if(TelemetryDaa.objects.filter(teleId=teleId)):
+      details=TelemetryDaa.objects.get(teleId=teleId)
+      objDetails=ast.literal_eval(details.data)
+      print(details.data)
+      print(data)
+      # code for form handling in telemetry obj
+      for x in data["form"]:
+        if x in objDetails.keys():
+            objDetails[x].append(data["form"][x])
+        else:
+          
+          objDetails["form"][x]=data["form"][x]
+          print(x)
+          print(data)
+          print(objDetails)
+      # end of this obj form telemetry 
+      for x in data["product"]:
+        objDetails["product"].append(x)
+      if(data==ast.literal_eval(details.data)):
+        print("equal")
+      else:
+        print("not equal")
+        for val in data["views"]:
+          if val in objDetails["views"]:
+            objDetails["views"][val]=objDetails["views"][val] + data["views"][val]
+          else:
+            objDetails["views"][val]=data["views"][val]
+        #for views updating
+        # if data["views"].keys() == objDetails["views"].keys():
+        #   print("views equal keys")
+        #   for key in objDetails["views"]:
+        #     objDetails["views"][key]=objDetails["views"][key]+data["views"][key]    
+        #   print("views equal keys",objDetails["views"])
+        # else:
+        #   print("views not equalt keys")
+        print(objDetails)
+        details.data=json.dumps(objDetails)
+        details.save()
+
+    else:
+      objDetails=ast.literal_eval(teleData)
+      print("data is their ",objDetails)
+      s=TelemetryDaa.objects.create(data=teleData,teleId=teleId)
+      s.save()
+      print("create details",s)
       
+    return HttpResponse("success", content_type='application/json')
+  def get(self, request, format=None):
+    s=TelemetryDaa.objects.all()
+    data = serializers.serialize('json', s)
+    return HttpResponse(data , content_type='application/json')
+import ast
+class PaymentDetails(APIView):
+  def post( self,request, format=None):
+    print(type(request.data.get("paymentDetails")))
+    print(request.data.get("paymentDetails"))
+    paymentDetails=ast.literal_eval(request.data.get("paymentDetails"))
+    print(paymentDetails["UserID"])
+    print(type(paymentDetails["UserID"]))
+    pricingiD=None
+    user=paymentDetails["UserID"]
+    OrderID=paymentDetails["orderid"]
+    category =paymentDetails["plan"]["category"]
+    days =paymentDetails["plan"]["days"]
+    regulars =paymentDetails["plan"]["regulars"]
+    topAds =paymentDetails["plan"]["topAds"]
+    featured=paymentDetails["plan"]["featured"]
+    teleSupport=paymentDetails["plan"]["teleSupport"]
+    response=paymentDetails["plan"]["response"]
+    chatSupport=paymentDetails["plan"]["chatSupport"]
+    dedicatedRm=paymentDetails["plan"]["dedicatedRm"]
+    hol9Website=paymentDetails["plan"]["hola9Website"]
+    print("sending--------------------------------")
+    if False:
+      s=Pricing.objects.get(user_id=user)
+      s.category=category
+      s.featured_ads=featured_ads
+      s.ads_limit=ads_limit
+      s.ads_timing=ads_timing
+      s.top_listing=top_listing
+      s.support=support
+      s.adsLeft=adsLeft
+      s.save()
+      pricingiD=s.pk
+    else:
+      if paymentDetails["plan"]["category"]=="Free":
+        s=Pricing.objects.create(user_id=user,category=category,days=days,regulars=regulars,topAds=topAds,featured=featured,teleSupport=teleSupport,response=response,chatSupport=chatSupport,dedicatedRm=dedicatedRm,hol9Website=hol9Website,OrderID=OrderID)
+        s.save()
+        pricingiD=s.pk
+    # s1=PaymentDetailsValues.objects.create(UserValue_id=paymentDetails["UserID"],PlanValue_id=pricingiD,OrderValue_id=paymentDetails["orderid"])
+    # s1.save()
+    # print("s.id is printing ........................................",s1)
+    return HttpResponse("Success",content_type='application/json') 
 
-      
+
+
+
+class jobDetails(APIView):
+  def post(self, request, format=None):
+    serializer = jobdetailsSerializers(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = serializer.save()
+    applied = get_tokens_for_user(user)
+    return Response("Sucess",content_type='application/json')
+  
+
+
+class jobsRequired(APIView):
+  def post(self,request, formate=None):
+      serializer = jobsRequiredSerialize(data=request.data)
+      serializer.is_valid(raise_exception=True)
+      user = serializer.save()
+      s=JobsRequired.objects.all()
+      data = serializers.serialize('json', s)
+      return HttpResponse(data, content_type='application/json')
+  def get(self,request, formate=None):
+      s=JobsRequired.objects.all()
+      data = serializers.serialize('json', s)
+      return HttpResponse(data, content_type='application/json')
+
+class FullProfile(APIView):
+    def post( self,request , format=None):
+        userId=request.data.get("user")
+        for x in Profile.objects.all():
+          print(x.user_id)
+        profileData=Profile.objects.filter(user=userId)
+        print(profileData)
+        data = serializers.serialize('json', profileData)
+        return HttpResponse(data, content_type='application/json')
+from rest_framework import generics
+class EnquiryListCreate(generics.ListCreateAPIView):
+    queryset = ContactForm.objects.all()
+    serializer_class = ContactSerializer
+
 
 

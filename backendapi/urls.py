@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/adsapi/',include('adsapi.urls')),
     path('api/blogsapi/',include('blogsapi.urls')),
     path('api/profileapi/',include('profileapi.urls')),
+    # path('api/openMoney/',include('opneMoney.urls')),
     #Social oauth URLS
     #Phone Login
     path('api/phone/',include('otp_reg.urls')),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('api/blogscomment/',include('blogscommentbox.urls')),
     #Payment API
     path('api/payment/',include('paymentapi.urls')),
+    # path('api/payu/', include('payu_app.urls')),
     
 
 ]+static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
